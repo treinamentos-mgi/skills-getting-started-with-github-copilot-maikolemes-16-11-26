@@ -104,13 +104,82 @@ section h3 {
 }
 
 .participant-list {
-  padding-left: 20px;
+  padding: 0;
+  list-style: none;
   color: #4b5563;
 }
 
-.participant-list li {
-  padding: 2px 0;
+.participant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+}
+
+.participant-email {
+  min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.remove-participant {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #b42318;
+}
+
+.remove-participant:hover {
+  background: #fee4e2;
+  color: #912018;
+}
+
+.remove-participant:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.remove-participant:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.delete-icon {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 2px 2px;
+}
+
+.delete-icon::before {
+  position: absolute;
+  top: -4px;
+  left: -3px;
+  width: 15px;
+  height: 1.5px;
+  background: currentColor;
+  content: "";
+}
+
+.delete-icon::after {
+  position: absolute;
+  top: -7px;
+  left: 3px;
+  width: 4px;
+  height: 2px;
+  border: 1.5px solid currentColor;
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+  content: "";
 }
 
 .participant-empty {

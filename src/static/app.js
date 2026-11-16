@@ -7,7 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
-      const response = await fetch("/activities");
+      const response = await fetch("/activities", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Failed to load activities");
+      }
+
       const activities = await response.json();
 
       // Clear loading message
@@ -42,7 +46,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
           details.participants.forEach((email) => {
             const participantItem = document.createElement("li");
-            participantItem.textContent = email;
+            participantItem.className = "participant-item";
+
+            const participantEmail = document.createElement("span");
+            participantEmail.className = "participant-email";
+            participantEmail.textContent = email;
+
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "remove-participant";
+            removeButton.setAttribute("aria-label", `Remove ${email} from ${name}`);
+            removeButton.title = "Cancel enrollment";
+
+            const deleteIcon = document.createElement("span");
+            deleteIcon.className = "delete-icon";
+            deleteIcon.setAttribute("aria-hidden", "true");
+            removeButton.appendChild(deleteIcon);
+
+            removeButton.addEventListener("click", async () => {
+              removeButton.disabled = true;
+
+              try {
+                const response = await fetch(
+                  `/activities/${encodeURIComponent(name)}/signup?email=${encodeURIComponent(email)}`,
+                  { method: "DELETE" }
+                );
+                const result = await response.json();
+
+                if (!response.ok) {
+                  throw new Error(result.detail || "Unable to cancel enrollment");
+                }
+
+                messageDiv.textContent = result.message;
+                messageDiv.className = "success";
+                messageDiv.classList.remove("hidden");
+                await fetchActivities();
+
+                setTimeout(() => {
+                  messageDiv.classList.add("hidden");
+                }, 5000);
+              } catch (error) {
+                messageDiv.textContent = error.message || "Failed to cancel enrollment.";
+                messageDiv.className = "error";
+                messageDiv.classList.remove("hidden");
+              } finally {
+                removeButton.disabled = false;
+              }
+            });
+
+            participantItem.append(participantEmail, removeButton);
             participantList.appendChild(participantItem);
           });
 
