@@ -38,9 +38,26 @@ activities = {
         "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+    },
+    "Aulas de cerâmica": {
+        "description": "Aulas de cerâmica",
+        "schedule": "Sextas, 16h às 18h",
+        "max_participants": 20,
+        "participants": []
+    },
+    "Competição de basquete": {
+        "description": "Treinos e competições de basquete",
+        "schedule": "Terças e quintas, 16h - 18h",
+        "max_participants": 20,
+        "participants": []
+    },
+    "Natação": {
+        "description": "Aulas de natação",
+        "schedule": "Segundas, quartas e sextas, 14h às 15h",
+        "max_participants": 20,
+        "participants": []
     }
 }
-
 
 @app.get("/")
 def root():
@@ -61,6 +78,10 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Get the specific activity
     activity = activities[activity_name]
+
+    # Validate student is not already signed up
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Estudante já inscrito nesta atividade")
 
     # Add student
     activity["participants"].append(email)
